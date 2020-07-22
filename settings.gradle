@@ -1,0 +1,2 @@
+rootProject.name='VKS'
+include ':app'

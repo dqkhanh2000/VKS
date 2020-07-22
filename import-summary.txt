@@ -1,0 +1,116 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .DS_Store
+* androidlibsvm.aar
+* java/
+* java/com/
+* java/com/sict/
+* java/com/sict/mobile/
+* java/com/sict/mobile/vks/
+* java/com/sict/mobile/vks/MainActivity.java
+* java/com/sict/mobile/vks/libs/
+* java/com/sict/mobile/vks/libs/BlazeFace.java
+* java/com/sict/mobile/vks/libs/FaceNet.java
+* java/com/sict/mobile/vks/libs/FileUtils.java
+* java/com/sict/mobile/vks/libs/LibSVM.java
+* java/com/sict/mobile/vks/libs/Logger.java
+* java/com/sict/mobile/vks/libs/YuvToRgbConverter.java
+* jni/
+* jni/.DS_Store
+* jni/CMakeLists.txt
+* jni/jnilibsvm/
+* jni/jnilibsvm/CMakeLists.txt
+* jni/jnilibsvm/common.cpp
+* jni/jnilibsvm/common.h
+* jni/jnilibsvm/jnilibsvm.cpp
+* jni/jnilibsvm/libsvm/
+* jni/jnilibsvm/libsvm/COPYRIGHT
+* jni/jnilibsvm/libsvm/README
+* jni/jnilibsvm/libsvm/svm-predict.cpp
+* jni/jnilibsvm/libsvm/svm-predict.h
+* jni/jnilibsvm/libsvm/svm-scale.cpp
+* jni/jnilibsvm/libsvm/svm-scale.h
+* jni/jnilibsvm/libsvm/svm-train.cpp
+* jni/jnilibsvm/libsvm/svm-train.h
+* jni/jnilibsvm/libsvm/svm.cpp
+* jni/jnilibsvm/libsvm/svm.h
+* jni/tensorflow_demo/
+* jni/tensorflow_demo/CMakeLists.txt
+* jni/tensorflow_demo/imageutils_jni.cc
+* jni/tensorflow_demo/object_tracking/
+* jni/tensorflow_demo/object_tracking/config.h
+* jni/tensorflow_demo/object_tracking/flow_cache.h
+* jni/tensorflow_demo/object_tracking/frame_pair.cc
+* jni/tensorflow_demo/object_tracking/frame_pair.h
+* jni/tensorflow_demo/object_tracking/geom.h
+* jni/tensorflow_demo/object_tracking/gl_utils.h
+* jni/tensorflow_demo/object_tracking/image-inl.h
+* jni/tensorflow_demo/object_tracking/image.h
+* jni/tensorflow_demo/object_tracking/image_data.h
+* jni/tensorflow_demo/object_tracking/image_neon.cc
+* jni/tensorflow_demo/object_tracking/image_utils.h
+* jni/tensorflow_demo/object_tracking/integral_image.h
+* jni/tensorflow_demo/object_tracking/jni_utils.h
+* jni/tensorflow_demo/object_tracking/keypoint.h
+* jni/tensorflow_demo/object_tracking/keypoint_detector.cc
+* jni/tensorflow_demo/object_tracking/keypoint_detector.h
+* jni/tensorflow_demo/object_tracking/logging.cc
+* jni/tensorflow_demo/object_tracking/logging.h
+* jni/tensorflow_demo/object_tracking/object_detector.cc
+* jni/tensorflow_demo/object_tracking/object_detector.h
+* jni/tensorflow_demo/object_tracking/object_model.h
+* jni/tensorflow_demo/object_tracking/object_tracker.cc
+* jni/tensorflow_demo/object_tracking/object_tracker.h
+* jni/tensorflow_demo/object_tracking/object_tracker_jni.cc
+* jni/tensorflow_demo/object_tracking/optical_flow.cc
+* jni/tensorflow_demo/object_tracking/optical_flow.h
+* jni/tensorflow_demo/object_tracking/sprite.h
+* jni/tensorflow_demo/object_tracking/time_log.cc
+* jni/tensorflow_demo/object_tracking/time_log.h
+* jni/tensorflow_demo/object_tracking/tracked_object.cc
+* jni/tensorflow_demo/object_tracking/tracked_object.h
+* jni/tensorflow_demo/object_tracking/utils.h
+* jni/tensorflow_demo/object_tracking/utils_neon.cc
+* jni/tensorflow_demo/prewhiten.cc
+* jni/tensorflow_demo/prewhiten.h
+* jni/tensorflow_demo/rgb2yuv.cc
+* jni/tensorflow_demo/rgb2yuv.h
+* jni/tensorflow_demo/yuv2rgb.cc
+* jni/tensorflow_demo/yuv2rgb.h
+* jniLibs/
+* jniLibs/.DS_Store
+* jniLibs/arm64-v8a/
+* jniLibs/arm64-v8a/libopencv_java3.so
+* jniLibs/armeabi-v7a/
+* jniLibs/armeabi-v7a/libopencv_java3.so
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => main/src/main/AndroidManifest.xml
+* assets/ => main/src/main/assets/
+* res/ => main/src/main/res/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
