@@ -129,7 +129,7 @@
                 android:background="@drawable/ic_access_alarm" />
 
             <Button
-                android:id="@+id/btn_itemToday_teacher_attendance"
+                android:id="@+id/btn_itemToday_attendance"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_gravity="right"

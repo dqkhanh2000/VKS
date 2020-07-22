@@ -1,6 +1,8 @@
 package com.sict.mobile.vks.utils;
 
-import com.sict.mobile.vks.ServerAPI;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sict.mobile.vks.interfaces.ServerAPI;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -11,11 +13,16 @@ public class APIUtils {
     private static Retrofit sRetrofit = null;
 
     public static Retrofit getClient(){
-        if(sRetrofit == null)
+        if(sRetrofit == null) {
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
             sRetrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
+
+        }
         return sRetrofit;
     }
 

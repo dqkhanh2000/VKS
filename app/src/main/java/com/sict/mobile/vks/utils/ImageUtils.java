@@ -150,6 +150,7 @@ public class ImageUtils {
                 ImageUtils.prewhiten(input, input.length, output);
                 return;
             } catch (UnsatisfiedLinkError e) {
+                e.printStackTrace();
                 LOGGER.w(
                         "Native prewhiten implementation not found, falling back to Java implementation");
                 useNativeConversion = false;
@@ -177,5 +178,5 @@ public class ImageUtils {
         output.rewind();
     }
 
-    private static native float prewhiten(float[] input, int length, FloatBuffer output);
+    private static native void prewhiten(float[] input, int length, FloatBuffer output);
 }

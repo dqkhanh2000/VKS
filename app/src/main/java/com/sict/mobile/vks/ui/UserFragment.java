@@ -1,10 +1,8 @@
 package com.sict.mobile.vks.ui;
 
-import androidx.fragment.app.Fragment;
-
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +13,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.developer.kalert.KAlertDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -24,20 +24,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.sict.mobile.vks.MainActivity;
 import com.sict.mobile.vks.R;
+import com.sict.mobile.vks.interfaces.CallBackListener;
+import com.sict.mobile.vks.utils.UserUtils;
 
 public class UserFragment extends Fragment {
-    private static final String PREFS_NAME = "user_prefs";
+
     private GoogleSignInClient mGoogleSignInClient;
     private Context context;
     int RC_SIGN_IN = 1;
-    private SharedPreferences prefs;
     private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         context = container.getContext();
-        prefs = context.getSharedPreferences(PREFS_NAME, context.MODE_PRIVATE);
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -45,7 +45,7 @@ public class UserFragment extends Fragment {
 
         mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
         int layout;
-        if(prefs.getBoolean("hasLogin", false))
+        if(UserUtils.isHasLogin())
             layout = R.layout.fragment_user_logined;
         else
             layout = R.layout.fragment_user_guest;
@@ -65,7 +65,7 @@ public class UserFragment extends Fragment {
         if(layout == R.layout.fragment_user_logined){
             Button btnSignOut = root.findViewById(R.id.btn_signOut);
             TextView txtName = root.findViewById(R.id.txt_fragmentUserLogin_userName);
-            txtName.setText(prefs.getString("name", null));
+            txtName.setText(UserUtils.getName());
             btnSignOut.setOnClickListener(v -> {
                 signOut();
             });
@@ -77,7 +77,7 @@ public class UserFragment extends Fragment {
 
     private void signOut() {
         mGoogleSignInClient.signOut().addOnSuccessListener(aVoid -> {
-            prefs.edit().putBoolean("hasLogin", false).apply();
+            UserUtils.setLogOut();
             Navigation.findNavController(root).navigate(R.id.navigation_user);
         });
     }
@@ -85,16 +85,6 @@ public class UserFragment extends Fragment {
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    private boolean saveLoginValue(GoogleSignInAccount account){
-        if(account == null) return false;
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("email", account.getEmail());
-        editor.putString("name", account.getDisplayName());
-        editor.putBoolean("hasLogin",true);  // set the prefs true after success login
-        editor.apply();
-        return true;
     }
 
 
@@ -110,10 +100,30 @@ public class UserFragment extends Fragment {
     private void handleSignInResult(Task<GoogleSignInAccount> task) {
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);
-            if(saveLoginValue(account)){
-                Toast.makeText(context, "Xin chào "+account.getDisplayName(), Toast.LENGTH_SHORT).show();
-                Navigation.findNavController(root).navigate(R.id.navigation_user);
-            }
+            KAlertDialog dialog = new KAlertDialog(context, KAlertDialog.PROGRESS_TYPE);
+            dialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            dialog.setTitleText("Đang đăng nhập");
+            dialog.setCancelable(false);
+            dialog.show();
+            UserUtils.setLogin(account.getEmail(), account.getDisplayName(), context, new CallBackListener() {
+                @Override
+                public void onDone() {
+                    Navigation.findNavController(root).navigate(R.id.navigation_user);
+                    Toast.makeText(context, "Xin chào "+account.getDisplayName(), Toast.LENGTH_SHORT).show();
+                    dialog.cancel();
+                }
+
+                @Override
+                public void onDone(Object obj) {
+
+                }
+
+                @Override
+                public void onError(String message) {
+
+                }
+            });
+
         } catch (ApiException e) {
             Toast.makeText(context, "Chỉ sử dụng email của khoa", Toast.LENGTH_SHORT).show();
         }

@@ -29,46 +29,9 @@ public class FileUtils {
     public static final String MODEL_FILE = "model";
     public static final String LABEL_FILE = "label";
 
-    public static void copyAsset(AssetManager mgr, String filename) {
-        InputStream in = null;
-        OutputStream out = null;
-
-        try {
-            File dir = new File(ROOT);
-            if(!dir.exists()) {
-                Log.d("TAG", "copyAsset: "+dir.mkdirs());;
-            }
-            File file = new File(ROOT + File.separator + filename);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            in = mgr.open(filename);
-            out = new FileOutputStream(file);
-
-            byte[] buffer = new byte[1024];
-            int read;
-            while((read = in.read(buffer)) != -1){
-                out.write(buffer, 0, read);
-            }
-        } catch (Exception e) {
-            LOGGER.e(e, "Excetion!");
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    LOGGER.e(e, "IOExcetion!");
-                }
-            }
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    LOGGER.e(e, "IOExcetion!");
-                }
-            }
-        }
+    public static void makeRoot(){
+        File root = new File(ROOT);
+        if(!root.exists()) root.mkdir();
     }
 
     public static void appendText(String text, String filename) {
@@ -94,7 +57,9 @@ public class FileUtils {
 
     public static boolean writeResponseBodyToDisk(ResponseBody body) {
         try {
-            File dataFile = new File(LibSVM.DATA_PATH);
+            File dataFile = new File(LibSVM.MODEL_PATH);
+            if(dataFile.exists()) dataFile.delete();
+            dataFile.createNewFile();
 
             InputStream inputStream = null;
             OutputStream outputStream = null;

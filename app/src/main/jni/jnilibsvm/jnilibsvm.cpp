@@ -7,71 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
-#include "./libsvm/svm-train.h"
 #include "./libsvm/svm-predict.h"
-#include "./libsvm/svm-scale.h"
 #include "common.h"
 
-// helper function to be called in Java for making svm-scale
-extern "C" void JNI_FUNC_NAME(jniSvmScale)(JNIEnv *env, jobject obj, jstring cmdIn, jstring fileOutPathIn){
-	const char *cmd = env->GetStringUTFChars(cmdIn, 0);
-	const char *fileOutPath = env->GetStringUTFChars(fileOutPathIn, 0);
-	debug("jniSvmScale cmd = %s, fileOutPath = %s", cmd, fileOutPath);
-
-	std::vector<char*> v;
-
-	// add dummy head to meet argv/command format
-	std::string cmdString = std::string("dummy ")+std::string(cmd);
-
-	cmdToArgv(cmdString, v);
-
-	// hack to redirect the std output of svm-scale to a file
-	// credit: https://stackoverflow.com/questions/10150468/how-to-redirect-cin-and-cout-to-files
-	freopen(fileOutPath,"w", stdout);
-
-	// make svm train by libsvm
-	svmscale::main(v.size(),&v[0]);
-
-	// close the redirect file(stdout)
-	// TODO: should we get the stdout back? seems not necessary in this case
-	fclose (stdout);
-
-
-	// free vector memory
-	for(int i=0;i<v.size();i++){
-		free(v[i]);
-	}
-
-	// free java object memory
-	env->ReleaseStringUTFChars(cmdIn, cmd);
-	env->ReleaseStringUTFChars(fileOutPathIn, fileOutPath);
-}
-
-
-// helper function to be called in Java for making svm-train
-extern "C" void JNI_FUNC_NAME(jniSvmTrain)(JNIEnv *env, jobject obj, jstring cmdIn){
-	const char *cmd = env->GetStringUTFChars(cmdIn, 0);
-	debug("jniSvmTrain cmd = %s", cmd);
-
-	std::vector<char*> v;
-
-	// add dummy head to meet argv/command format
-	std::string cmdString = std::string("dummy ")+std::string(cmd);
-
-	cmdToArgv(cmdString, v);
-
-	// make svm train by libsvm
-	svmtrain::main(v.size(),&v[0]);
-
-
-	// free vector memory
-	for(int i=0;i<v.size();i++){
-		free(v[i]);
-	}
-
-	// free java object memory
-	env->ReleaseStringUTFChars(cmdIn, cmd);
-}
 
 // helper function to be called in Java for making svm-predict
 extern "C" void JNI_FUNC_NAME(jniSvmPredict)(JNIEnv *env, jobject obj, jstring cmdIn, jobject buf, jint len){
@@ -105,7 +43,6 @@ extern "C" void JNI_FUNC_NAME(jniSvmPredict)(JNIEnv *env, jobject obj, jstring c
 	// free java object memory
 	env->ReleaseStringUTFChars(cmdIn, cmd);
 }
-
 
 
 /*

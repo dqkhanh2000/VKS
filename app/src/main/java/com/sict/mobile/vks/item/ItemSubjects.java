@@ -1,18 +1,18 @@
 package com.sict.mobile.vks.item;
 
 public class ItemSubjects {
-    private String NameSubjects;
+    private String nameSubjects;
     private String timeSubjects;
-    private String ClassSubjects;
+    private String classSubjects;
 
     public ItemSubjects(String nameSubjects, String timeSubjects, String classSubjects) {
-        NameSubjects = nameSubjects;
+        this.nameSubjects = nameSubjects;
         this.timeSubjects = timeSubjects;
-        ClassSubjects = classSubjects;
+        this.classSubjects = classSubjects;
     }
 
     public String getNameSubjects() {
-        return NameSubjects;
+        return nameSubjects;
     }
 
     public String getTimeSubjects() {
@@ -20,6 +20,6 @@ public class ItemSubjects {
     }
 
     public String getClassSubjects() {
-        return ClassSubjects;
+        return classSubjects;
     }
 }

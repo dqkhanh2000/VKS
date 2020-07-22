@@ -3,12 +3,15 @@ package com.sict.mobile.vks.libs;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.sict.mobile.vks.interfaces.CallBackListener;
 import com.sict.mobile.vks.model.TrainData;
 import com.sict.mobile.vks.utils.APIUtils;
 import com.sict.mobile.vks.utils.FileUtils;
+import com.sict.mobile.vks.utils.UserUtils;
 
 import java.io.File;
 import java.nio.FloatBuffer;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -25,8 +28,7 @@ import retrofit2.Response;
 public class LibSVM {
     private static final String TAG = "LibSVM";
     private String LOG_TAG = "LibSVM";
-    public static String DATA_PATH = FileUtils.ROOT + File.separator + FileUtils.DATA_FILE;
-    private String MODEL_PATH = FileUtils.ROOT + File.separator + FileUtils.MODEL_FILE;
+    public static String MODEL_PATH = FileUtils.ROOT + File.separator + FileUtils.MODEL_FILE;
 
     private int index;
     private double prob;
@@ -52,35 +54,26 @@ public class LibSVM {
     }
 
     // connect the native functions
-    private native void testLog(String log);
-    private native void jniSvmTrain(String cmd);
     private native void jniSvmPredict(String cmd, FloatBuffer buf, int len);
-    private native void jniSvmScale(String cmd, String fileOutPath);
 
-    // public interfaces
-    private void train(String cmd) {
-        jniSvmTrain(cmd);
-    }
     private void predict(String cmd, FloatBuffer buf, int len) {
         jniSvmPredict(cmd, buf, len);
     }
-    private void scale(String cmd, String fileOutPath) {
-        jniSvmScale(cmd, fileOutPath);
-    }
 
-    public void train(int label, ArrayList<float[]> list) {
+    public void train(int label, ArrayList<float[]> list, CallBackListener callBackListener) {
         StringBuilder builder = new StringBuilder();
-
+        builder.append(System.lineSeparator());
         for (int i = 0; i < list.size(); i++) {
             float[] array = list.get(i);
             builder.append(label);
             for (int j = 0; j < array.length; j++) {
-                builder.append(" ").append(j).append(":").append(array[j]);
+                String f = String.format("%.6f", array[j]).replace(',','.');
+                builder.append(" ").append(j).append(":").append(f);
             }
             if (i < list.size() - 1) builder.append(System.lineSeparator());
         }
         String s = builder.toString();
-//        FileUtils.appendText(builder.toString(), FileUtils.DATA_FILE);
+
         APIUtils.getAPI().trainInServer(label, s).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -88,6 +81,8 @@ public class LibSVM {
                     Log.d(TAG, "server contacted and has file");
 
                     boolean writtenToDisk = FileUtils.writeResponseBodyToDisk(response.body());
+                    UserUtils.setHasData();
+                    callBackListener.onDone();
 
                     Log.d(TAG, "file download was a success? " + writtenToDisk);
                 } else {
@@ -98,16 +93,10 @@ public class LibSVM {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d("TAG", "onFailure: "+t.getMessage());
+                callBackListener.onError(t.getMessage());
             }
         });
 
-//        train();
-    }
-
-    public void train() {
-        String options = "-t 0 -b 1";
-        String cmd = TextUtils.join(" ", Arrays.asList(options, DATA_PATH, MODEL_PATH));
-        train(cmd);
     }
 
     public Prediction predict(FloatBuffer buffer) {
@@ -118,7 +107,6 @@ public class LibSVM {
         return new Prediction(index, (float) prob);
     }
 
-    // singleton for the easy access
     private static LibSVM svm;
     public static LibSVM getInstance() {
         if (svm == null) {

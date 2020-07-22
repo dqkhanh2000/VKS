@@ -21,12 +21,4 @@ public class Recognizer {
         this.svm = LibSVM.getInstance();
     }
 
-    public void recognition(Bitmap bitmap, Rect rect) {
-
-        FloatBuffer buffer = faceNet.getEmbeddings(bitmap, rect);
-        LibSVM.Prediction prediction = svm.predict(buffer);
-        int index = prediction.getIndex();
-        Log.i(TAG, "onSuccess: "+index+" p: "+prediction.getProb());
-
-    }
 }

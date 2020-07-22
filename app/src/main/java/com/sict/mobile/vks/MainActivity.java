@@ -4,25 +4,20 @@ package com.sict.mobile.vks;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.sict.mobile.vks.model.TrainData;
-import com.sict.mobile.vks.utils.APIUtils;
-import com.sict.mobile.vks.utils.FileUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.sict.mobile.vks.utils.FileUtils;
+import com.sict.mobile.vks.utils.UserUtils;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -39,13 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if(!hasPermission()) requestPermission();
-
-//        Intent intent = new Intent(this, RecognitionActivity.class);
-//        intent.putExtra("MODE", "add");
-//        startActivity(intent);
         navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications,R.id.navigation_todo,R.id.navigation_user)
                 .build();
@@ -55,15 +44,16 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.toolbar);
+
+        UserUtils.init(this);
     }
 
 
 
 
     private boolean hasPermission() {
-        FileUtils.copyAsset(getAssets(), FileUtils.DATA_FILE);
-        FileUtils.copyAsset(getAssets(), FileUtils.MODEL_FILE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            FileUtils.makeRoot();
             return checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED &&
                     checkSelfPermission(PERMISSION_STORAGE) == PackageManager.PERMISSION_GRANTED;
         } else {
@@ -92,5 +82,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
     }
+
 }
 
